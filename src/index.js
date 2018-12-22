@@ -5,17 +5,18 @@ class WatchClickOutside extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.myRef = React.createRef();
   }
 
   componentWillMount() {
-    document.body.addEventListener("click", this.handleClick);
+    document.body.addEventListener("click", this.handleClick,false);
   }
 
   componentWillUnmount() {
     // remember to remove all events to avoid memory leaks
-    document.body.removeEventListener("click", this.handleClick);
+    document.body.removeEventListener("click", this.handleClick,false);
   }
-  myRef = React.createRef();
+  
   handleClick(event) {
     const { onClickOutside } = this.props;
 
@@ -26,13 +27,13 @@ class WatchClickOutside extends React.Component {
 
     // if target is container - container was not clicked outside
     // if container contains clicked target - click was not outside of it
-    if (!this.myRef.current.contains(event.target)) {
+    if (target !== this.myRef && !this.myRef.current.contains(target)) {
       onClickOutside(event); // clicked outside - fire callback
     }
   }
 
   render() {
-    return <div ref={this.myRef}>{this.props.children}</div>;
+    return <span ref={this.myRef}>{this.props.children}</span>;
   }
 }
 
